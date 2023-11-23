@@ -94,6 +94,22 @@ module View = struct
     include (Jv.Id : Jv.CONV with type t := t)
   end
 
+  module ViewPlugin = struct
+    type plugin_value = { update : Update.t -> unit; destruct : unit -> unit }
+
+    let define create =
+      let viewPlugin = Jv.get g "ViewPlugin" in
+      let f view =
+        let { update; destruct } = create view in
+        let o = Jv.obj [||] in
+        Jv.set o "update" (Jv.callback ~arity:1 update);
+        Jv.set o "destruct" (Jv.callback ~arity:1 destruct);
+        o
+      in
+      let ext = Jv.call viewPlugin "define" [| Jv.callback ~arity:1 f |] in
+      Extension.of_jv ext
+  end
+
   let dom t = Jv.get t "dom" |> Brr.El.of_jv
 
   let update_listener _ : (Update.t -> unit, Jv.t) State.facet =

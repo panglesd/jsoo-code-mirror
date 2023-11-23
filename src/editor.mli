@@ -78,6 +78,12 @@ module View : sig
     include Jv.CONV with type t := t
   end
 
+  module ViewPlugin : sig
+    type plugin_value = { update : Update.t -> unit; destruct : unit -> unit }
+
+    val define : (t -> plugin_value) -> Extension.t
+  end
+
   val dom : t -> Brr.El.t
   val update_listener : unit -> (Update.t -> unit, Jv.t) State.facet
   val line_wrapping : unit -> Extension.t
