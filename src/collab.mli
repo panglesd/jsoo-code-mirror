@@ -8,6 +8,7 @@ module Update : sig
 
   val changes : t -> Editor.ChangeSet.t
   val clientID : t -> string
+  val make : Editor.ChangeSet.t -> string -> t
 end
 
 val receiveUpdates :

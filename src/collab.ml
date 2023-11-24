@@ -17,6 +17,12 @@ module Update = struct
 
   let changes t = Jv.get t "changes" |> Editor.ChangeSet.of_jv
   let clientID t = Jv.get t "clientID" |> Jv.to_string
+
+  let make changes clientID =
+    let o = Jv.obj [||] in
+    Jv.set o "changes" (Editor.ChangeSet.to_jv changes);
+    Jv.set o "clientID" (Jv.of_string clientID);
+    o
 end
 
 let receiveUpdates state updates =

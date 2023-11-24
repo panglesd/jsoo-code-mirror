@@ -125,12 +125,11 @@ module View = struct
   let set_state t v = Jv.call t "setState" [| State.to_jv v |] |> ignore
 
   let dispatch t = function
-    | [] -> ()
-    | [ trans ] ->
-        ignore @@ Jv.call t "dispatch" [| State.Transaction.to_jv trans |]
+    | [] -> Jv.undefined
+    | [ trans ] -> Jv.call t "dispatch" [| State.Transaction.to_jv trans |]
     | l ->
         let arr = Jv.of_list State.Transaction.to_jv l in
-        ignore @@ Jv.call t "dispatch" [| arr |]
+        Jv.call t "dispatch" [| arr |]
 
   module Update = struct
     type t = Jv.t

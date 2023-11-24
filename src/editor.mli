@@ -89,7 +89,7 @@ module View : sig
   val create : ?opts:opts -> unit -> t
   (** Create a new view *)
 
-  val dispatch : t -> State.Transaction.t list -> unit
+  val dispatch : t -> State.Transaction.t list -> Jv.t
 
   val state : t -> State.t
   (** Current editor state *)
