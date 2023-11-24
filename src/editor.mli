@@ -89,6 +89,8 @@ module View : sig
   val create : ?opts:opts -> unit -> t
   (** Create a new view *)
 
+  val dispatch : t -> State.Transaction.t list -> unit
+
   val state : t -> State.t
   (** Current editor state *)
 
@@ -99,6 +101,7 @@ module View : sig
 
     val state : t -> State.t
     val changes : t -> ChangeSet.t
+    val docChanged : t -> bool
 
     include Jv.CONV with type t := t
   end

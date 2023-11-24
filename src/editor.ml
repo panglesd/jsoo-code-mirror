@@ -124,11 +124,23 @@ module View = struct
   let state t = Jv.get t "state" |> State.of_jv
   let set_state t v = Jv.call t "setState" [| State.to_jv v |] |> ignore
 
+  let dispatch t = function
+    | [] -> ()
+    | [ trans ] ->
+        ignore @@ Jv.call t "dispatch" [| State.Transaction.to_jv trans |]
+    | l ->
+        let arr = Jv.of_list State.Transaction.to_jv l in
+        ignore @@ Jv.call t "dispatch" [| arr |]
+
   module Update = struct
     type t = Jv.t
 
     let state t = State.of_jv @@ Jv.get t "state"
     let changes t = ChangeSet.of_jv @@ Jv.get t "changes"
+
+    let docChanged t =
+      let s = Jv.get t "docChanged" in
+      Jv.to_bool s
 
     include (Jv.Id : Jv.CONV with type t := t)
   end
