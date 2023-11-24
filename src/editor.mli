@@ -1,3 +1,12 @@
+module ChangeSet : sig
+  type t
+
+  val toJSON : t -> Brr.Json.t
+  val fromJSON : Brr.Json.t -> t
+
+  include Jv.CONV with type t := t
+end
+
 module State : sig
   type t
 
@@ -13,6 +22,21 @@ module State : sig
       ?extensions:Extension.t array ->
       unit ->
       t
+  end
+
+  module Transaction : sig
+    type state := t
+    type t
+
+    val startState : t -> state
+    val changes : t -> ChangeSet.t
+    val scrollIntoView : t -> bool
+    val newDoc : t -> Text.t
+    val state : t -> state
+    val docChanged : t -> bool
+    val reconfigured : t -> bool
+
+    include Jv.CONV with type t := t
   end
 
   module type Facet = sig
@@ -74,6 +98,7 @@ module View : sig
     type t
 
     val state : t -> State.t
+    val changes : t -> ChangeSet.t
 
     include Jv.CONV with type t := t
   end

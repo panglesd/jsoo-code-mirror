@@ -1,3 +1,13 @@
+module ChangeSet = struct
+  type t = Jv.t
+
+  let g = Jv.get Jv.global "__CM__changeSet"
+  let toJSON v : Brr.Json.t = Jv.call v "toJSON" [||]
+  let fromJSON json = Jv.call g "fromJSON" [| json |]
+
+  include (Jv.Id : Jv.CONV with type t := t)
+end
+
 module State = struct
   module Config = struct
     type t = Jv.t
@@ -9,6 +19,34 @@ module State = struct
       Jv.set_if_some o "extensions"
         (Option.map (Jv.of_array Extension.to_jv) extensions);
       o
+  end
+
+  module Transaction = struct
+    type t = Jv.t
+
+    let startState t = Jv.get t "startState"
+    let changes t = Jv.get t "changes"
+
+    (* let selection t = *)
+    (*   let s = Jv.get t "selection" in *)
+    (*   if Jv.defined s then Some s else None *)
+
+    let scrollIntoView t =
+      let s = Jv.get t "scrollIntoView" in
+      Jv.to_bool s
+
+    let newDoc t = Text.of_jv @@ Jv.get t "newDoc"
+    let state t = Jv.get t "state"
+
+    let docChanged t =
+      let s = Jv.get t "docChanged" in
+      Jv.to_bool s
+
+    let reconfigured t =
+      let s = Jv.get t "reconfigured" in
+      Jv.to_bool s
+
+    include (Jv.Id : Jv.CONV with type t := t)
   end
 
   module type Facet = sig
@@ -90,6 +128,7 @@ module View = struct
     type t = Jv.t
 
     let state t = State.of_jv @@ Jv.get t "state"
+    let changes t = ChangeSet.of_jv @@ Jv.get t "changes"
 
     include (Jv.Id : Jv.CONV with type t := t)
   end
@@ -98,7 +137,7 @@ module View = struct
     type plugin_value = { update : Update.t -> unit; destruct : unit -> unit }
 
     let define create =
-      let viewPlugin = Jv.get g "ViewPlugin" in
+      let viewPlugin = Jv.get Jv.global "__CM__viewPlugin" in
       let f view =
         let { update; destruct } = create view in
         let o = Jv.obj [||] in
