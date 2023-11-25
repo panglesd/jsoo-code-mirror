@@ -18,6 +18,7 @@
         "@codemirror/state": "^6.0.0",
 	"@codemirror/collab": "^6.0.0",
         "@codemirror/language": "^6.0.0",
+        "@codemirror/lang-markdown": "^6.0.0",
         "@codemirror/autocomplete": "^6.0.0",
         "@codemirror/legacy-modes": "^6.0.0",
         "@codemirror/lint": "^6.0.0",
