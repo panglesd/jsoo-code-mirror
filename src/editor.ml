@@ -126,7 +126,7 @@ module View = struct
 
   let dispatch t = function
     | [] -> Jv.undefined
-    | [ trans ] -> Jv.call t "dispatch" [| State.Transaction.to_jv trans |]
+    (* | [ trans ] -> Jv.call t "dispatch" [| State.Transaction.to_jv trans |] *)
     | l ->
         let arr = Jv.of_list State.Transaction.to_jv l in
         Jv.call t "dispatch" [| arr |]

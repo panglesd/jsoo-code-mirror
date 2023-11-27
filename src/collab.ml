@@ -2,7 +2,7 @@ type config = Jv.t
 
 let config ?start_version ?clientID () =
   let o = Jv.obj [||] in
-  Jv.set_if_some o "start_version" (Option.map Jv.of_int start_version);
+  Jv.set_if_some o "startVersion" (Option.map Jv.of_int start_version);
   Jv.set_if_some o "clientID" (Option.map Jv.of_string clientID);
   o
 
