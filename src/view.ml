@@ -254,6 +254,44 @@ module Panel = struct
   type panel_constructor = Constructor.pc
 end
 
+module PluginValue = struct
+  type t = Jv.t
+
+  include (Jv.Id : Jv.CONV with type t := t)
+
+  let create :
+      ?update:(EditorView.Update.t -> unit) ->
+      ?docViewUpdate:(EditorView.t -> unit) ->
+      ?destroy:(unit -> unit) ->
+      unit ->
+      t =
+   fun ?update ?docViewUpdate ?destroy () ->
+    let o = Jv.obj [||] in
+    Jv.set_if_some o "update"
+      (Option.map (fun u jv -> u (EditorView.Update.of_jv jv)) update
+      |> Option.map (Jv.callback ~arity:1));
+    Jv.set_if_some o "docViewUpdate"
+      (Option.map (fun u jv -> u (EditorView.of_jv jv)) docViewUpdate
+      |> Option.map (Jv.callback ~arity:1));
+    Jv.set_if_some o "destroy" (Option.map (Jv.callback ~arity:1) destroy);
+    o
+end
+
+module ViewPlugin = struct
+  type t = Jv.t
+
+  include (Jv.Id : Jv.CONV with type t := t)
+
+  let viewPlugin = lazy (Jv.get Jv.global "__CM__viewPlugin")
+
+  let define create =
+    let viewPlugin = Lazy.force viewPlugin in
+    let f jv = PluginValue.to_jv (create (EditorView.of_jv jv)) in
+    Jv.call viewPlugin "define" [| Jv.callback ~arity:1 f |]
+
+  let extension v = Extension.of_jv v
+end
+
 let showPanel : (Panel.Constructor.pc, Jv.t) State.Facet.t =
   let iconv = Panel.Constructor.{ Tjv.of_jv; to_jv } in
   State.Facet.create iconv Panel.showPanel

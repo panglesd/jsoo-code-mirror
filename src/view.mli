@@ -117,6 +117,28 @@ module Panel : sig
   type panel_constructor = (EditorView.t -> t) option
 end
 
+module PluginValue : sig
+  type t
+
+  include Jv.CONV with type t := t
+
+  val create :
+    ?update:(EditorView.Update.t -> unit) ->
+    ?docViewUpdate:(EditorView.t -> unit) ->
+    ?destroy:(unit -> unit) ->
+    unit ->
+    t
+end
+
+module ViewPlugin : sig
+  type t
+
+  include Jv.CONV with type t := t
+
+  val define : (EditorView.t -> PluginValue.t) -> t
+  val extension : t -> Extension.t
+end
+
 val showPanel : (Panel.panel_constructor, Jv.t) State.Facet.t
 
 val line_numbers :
