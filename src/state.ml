@@ -246,6 +246,14 @@ end = struct
     |> StateEffect.of_jv (Tjv.conv Extension.to_jv Extension.of_jv)
 end
 
+module ChangeSet = struct
+  include ChangeSet
+
+  let g = lazy (Jv.get Jv.global "__CM__changeSet")
+  let to_json v : Brr.Json.t = Jv.call (to_jv v) "toJSON" [||]
+  let of_json json = Jv.call (Lazy.force g) "fromJSON" [| json |] |> of_jv
+end
+
 (* A ChangeSpec describes changes to the document: one replacement of
    [from]..[to_] by [insert], or several at once. *)
 module ChangeSpec : sig
@@ -254,6 +262,7 @@ module ChangeSpec : sig
   include Jv.CONV with type t := t
 
   val create : from:int -> ?to_:int -> ?insert:string -> unit -> t
+  val of_change_set : ChangeSet.t -> t
   val of_list : t list -> t
 end = struct
   type t = Jv.t
@@ -267,6 +276,7 @@ end = struct
     Jv.set_if_some o "insert" (Option.map Jv.of_string insert);
     o
 
+  let of_change_set x = ChangeSet.to_jv x
   let of_list l = Jv.of_list to_jv l
 end
 

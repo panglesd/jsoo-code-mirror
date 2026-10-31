@@ -85,6 +85,14 @@ module EditorView : sig
   (** [dispatch view spec] makes the transaction [spec] describes and applies it
       to the view. *)
 
+  val dispatch_transactions : t -> State.Transaction.t list -> unit
+  (** Update the view for the given list of transactions, applied in order. Each
+      must start from the state produced by the previous one, the first from the
+      view's current state; otherwise CodeMirror raises a [RangeError]. Its
+      implementation can be overridden with the [dispatch_transactions] option
+      of {!EditorViewConfig.create}. It is a binding to Codemirror's [dispatch],
+      just like {!dispatch}. *)
+
   val set_doc : t -> string -> unit
   (** [set_doc view doc] replaces the whole document with [doc], as one
       transaction. *)

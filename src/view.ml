@@ -146,6 +146,11 @@ module EditorView = struct
    fun t spec ->
     Jv.call t "dispatch" [| State.TransactionSpec.to_jv spec |] |> ignore
 
+  let dispatch_transactions : t -> State.Transaction.t list -> unit =
+   fun t l ->
+    let arr = Jv.of_list State.Transaction.to_jv l in
+    Jv.call t "dispatch" [| arr |] |> ignore
+
   let set_doc t doc =
     let length = State.Text.length (State.EditorState.doc (state t)) in
     dispatch t

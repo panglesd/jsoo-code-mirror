@@ -1,6 +1,7 @@
 import { EditorView, basicSetup } from "codemirror"
-import { EditorState, StateField, StateEffect, EditorSelection, RangeSet, Compartment } from "@codemirror/state"
+import { EditorState, StateField, StateEffect, EditorSelection, RangeSet, Compartment, ChangeSet } from "@codemirror/state"
 import { hoverTooltip, showPanel, keymap, Decoration, WidgetType, lineNumbers, ViewPlugin } from "@codemirror/view"
+import { receiveUpdates, sendableUpdates, getSyncedVersion, getClientID, collab } from "@codemirror/collab"
 import * as lint from "@codemirror/lint"
 import * as autocomplete from "@codemirror/autocomplete"
 import * as dark from "@codemirror/theme-one-dark"
@@ -32,3 +33,9 @@ joo_global_object.__CM__Compartment = Compartment;
 joo_global_object.__CM__WidgetType = WidgetType;
 joo_global_object.__CM__lineNumbers = lineNumbers;
 joo_global_object.__CM__viewPlugin = ViewPlugin;
+joo_global_object.__CM__collab = collab;
+joo_global_object.__CM__receiveUpdates = receiveUpdates;
+joo_global_object.__CM__sendableUpdates = sendableUpdates;
+joo_global_object.__CM__getSyncedVersion = getSyncedVersion;
+joo_global_object.__CM__getClientID = getClientID;
+joo_global_object.__CM__changeSet = ChangeSet;

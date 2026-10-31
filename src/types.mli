@@ -53,6 +53,12 @@ module State : sig
     val to_conv : ('input, 'output) t -> 'input Tjv.conv
     val create : 'input Tjv.conv -> Jv.t -> ('input, 'output) t
   end
+
+  module ChangeSet : sig
+    type t
+
+    include Jv.CONV with type t := t
+  end
 end
 
 module View : sig
