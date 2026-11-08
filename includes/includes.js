@@ -33,3 +33,5 @@ joo_global_object.__CM__Compartment = Compartment;
 joo_global_object.__CM__WidgetType = WidgetType;
 joo_global_object.__CM__lineNumbers = lineNumbers;
 joo_global_object.__CM__jumpToDefinitionKeymap = jumpToDefinitionKeymap;
+joo_global_object.__CM__LSPClient = LSPClient;
+joo_global_object.__CM__languageServerExtensions = languageServerExtensions;
